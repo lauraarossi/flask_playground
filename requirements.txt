@@ -1,6 +1,26 @@
+# Flask and Web Framework Dependencies
 Flask==2.3.3
 Flask-SQLAlchemy==3.0.5
 Flask-WTF==1.2.1
 WTForms==3.1.1
-email-validator==2.1.0
 Werkzeug==2.3.7
+
+# Form Validation
+email-validator==2.1.0
+
+# Database
+SQLAlchemy==2.0.21
+
+# Development and Type Checking Tools
+mypy==1.5.1
+types-Werkzeug==2.3.7.1
+types-requests==2.31.0.10
+
+# Testing (Optional)
+pytest==7.4.2
+pytest-flask==1.2.0
+
+# Code Quality (Optional)
+black==23.9.1
+flake8==6.1.0
+isort==5.12.0
