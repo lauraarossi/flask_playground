@@ -1,4 +1,5 @@
-# Flask Pet Registration Application
+[A sample app to play around with flask and javascript]
+# Pet Information Form - Flask App
 
 A Flask web application for registering pet owners and their pets with a dynamic multi-pet interface. The application features a modular architecture with separate models and forms, session management for multi-pet submissions, and a responsive UI with pet selection buttons.
 
@@ -64,37 +65,18 @@ conda activate flask-demo
 pip install -r requirements.txt
 ```
 
-### Database Setup
-```bash
-# Run the application (database will be created automatically)
-python app.py
-```
+2. **Run the Application**:
+   ```bash
+   python app.py
+   ```
 
-## 🎯 Usage
+3. **Access the Application**:
+   - Open your browser and go to `http://localhost:5000`
+   - Fill out the form with pet and owner information
+   - Click "Submit" to save the data
+   - Use the "View All Data" link to see all submissions
 
-### Starting the Application
-```bash
-python app.py
-```
-The application will be available at `http://127.0.0.1:5000`
-
-### Adding Pet Data
-1. **Fill Owner Information**: Enter name, email, phone, and postal code
-2. **Select Number of Pets**: Choose how many pets to register (1-5)
-3. **Click Pet Buttons**: Dynamic buttons appear for each pet
-4. **Add Pet Details**: Fill in pet information (type, sex, age, location, microchipped)
-5. **Submit**: Pet data is saved to database
-6. **Repeat**: Continue for remaining pets
-7. **View Data**: Check `/view_data` to see all submissions
-
-### Features in Action
-- **Session Persistence**: Owner information is preserved across pet submissions
-- **Progress Tracking**: Visual feedback shows which pets have been added
-- **Duplicate Prevention**: Cannot add the same pet twice
-- **Form Validation**: Ensures all required fields are completed
-- **Reset Functionality**: Clear session to start fresh
-
-## 🗄️ Database Schema
+## Database Schema
 
 ### PetOwner Table
 | Field | Type | Constraints | Description |
