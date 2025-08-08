@@ -85,21 +85,19 @@ def create_pet_owner_model(db: "SQLAlchemy") -> type:
         __tablename__ = "pet_owner"
 
         # Primary key
-        id: int = db.Column(db.Integer, primary_key=True)
+        id = db.Column(db.Integer, primary_key=True)
 
         # Owner information fields
-        name: str = db.Column(db.String(100), nullable=False)
-        email: str = db.Column(db.String(120), nullable=False)
-        phone: str = db.Column(db.String(20), nullable=False)
-        postal_code: str = db.Column(db.String(10), nullable=False)
+        name = db.Column(db.String(100), nullable=False)
+        email = db.Column(db.String(120), nullable=False)
+        phone = db.Column(db.String(20), nullable=False)
+        postal_code = db.Column(db.String(10), nullable=False)
 
         # Timestamp
-        created_at: datetime = db.Column(
-            db.DateTime, default=lambda: datetime.now(timezone.utc)
-        )
+        created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
         # Relationship to pets
-        pets: List["Pet"] = db.relationship(
+        pets = db.relationship(
             "Pet", backref="owner", lazy=True, cascade="all, delete-orphan"
         )
 

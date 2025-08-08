@@ -91,27 +91,23 @@ def create_pet_model(db: "SQLAlchemy") -> type:
         __tablename__ = "pet"
 
         # Primary key
-        id: int = db.Column(db.Integer, primary_key=True)
+        id = db.Column(db.Integer, primary_key=True)
 
         # Pet information fields
-        pet_type: str = db.Column(db.String(10), nullable=False)  # 'cat' or 'dog'
-        sex: str = db.Column(db.String(10), nullable=False)  # 'male' or 'female'
-        age: int = db.Column(db.Integer, nullable=False)
-        location_type: str = db.Column(
-            db.String(10), nullable=False
-        )  # 'city' or 'rural'
-        microchipped: bool = db.Column(db.Boolean, default=False)
+        pet_type = db.Column(db.String(10), nullable=False)  # 'cat' or 'dog'
+        sex = db.Column(db.String(10), nullable=False)  # 'male' or 'female'
+        age = db.Column(db.Integer, nullable=False)
+        location_type = db.Column(db.String(10), nullable=False)  # 'city' or 'rural'
+        microchipped = db.Column(db.Boolean, default=False)
 
         # Sequential number for multi-pet households
-        pet_number: int = db.Column(db.Integer, nullable=False)
+        pet_number = db.Column(db.Integer, nullable=False)
 
         # Foreign key to PetOwner
-        owner_id: int = db.Column(
-            db.Integer, db.ForeignKey("pet_owner.id"), nullable=False
-        )
+        owner_id = db.Column(db.Integer, db.ForeignKey("pet_owner.id"), nullable=False)
 
         # Timestamp
-        created_at: datetime = db.Column(db.DateTime, default=datetime.utcnow)
+        created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
         def __repr__(self) -> str:
             """

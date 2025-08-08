@@ -34,13 +34,13 @@ from models.pet_model import create_pet_model
 from forms.pet_owner_form import PetOwnerForm
 
 # Initialize Flask application
-app: Flask = Flask(__name__)
+app = Flask(__name__)
 app.config["SECRET_KEY"] = "your-secret-key-here"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///pets.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Initialize database with the app
-db: SQLAlchemy = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 # Create models with the database instance
 PetOwner = create_pet_owner_model(db)
@@ -51,18 +51,20 @@ Pet = create_pet_model(db)
 def index() -> Union[str, Any]:
     """
     Main form page for pet registration.
-    
+
     Handles both GET and POST requests:
     - GET: Displays the pet registration form
     - POST: Processes form submission and saves data to database
-    
+
     The form supports multi-pet registration with session management
     to maintain owner information across multiple pet submissions.
-    
-    Returns:
+
+    Returns
+    -------
+    Union[str, Any]
         Rendered template with form or redirect response
     """
-    form: PetOwnerForm = PetOwnerForm()
+    form = PetOwnerForm()
 
     # Initialize session data if not exists
     if "owner_data" not in session:
@@ -75,7 +77,7 @@ def index() -> Union[str, Any]:
     if form.validate_on_submit():
         try:
             # Get the current pet number from the form
-            current_pet_number: str = request.form.get("current_pet_number", "1")
+            current_pet_number = request.form.get("current_pet_number", "1")
 
             # If this is the first submission, save owner data to session
             if not session["owner_data"]:
@@ -167,24 +169,8 @@ def index() -> Union[str, Any]:
             print(f"Error details: {str(e)}")
             print(f"Traceback: {traceback.format_exc()}")
             flash(f"An error occurred: {str(e)}. Please try again.", "error")
-    elif form.errors:
-        # Form validation failed - provide detailed error messages
-        error_messages: List[str] = []
-        for field, errors in form.errors.items():
-            field_name: str = (
-                getattr(form, field).label.text
-                if hasattr(form, field) and hasattr(getattr(form, field), "label")
-                else field
-            )
-            for error in errors:
-                error_messages.append(f"{field_name}: {error}")
 
-        if error_messages:
-            flash(
-                "Please fix the following errors: " + "; ".join(error_messages), "error"
-            )
-
-    # Pre-populate form with session data if available
+    # Pre-populate form with session data
     if session["owner_data"]:
         form.name.data = session["owner_data"].get("name", "")
         form.email.data = session["owner_data"].get("email", "")
@@ -204,14 +190,16 @@ def index() -> Union[str, Any]:
 def view_data() -> str:
     """
     Display all submitted pet and owner data.
-    
+
     Retrieves all PetOwner records from the database and displays
     them in a table format with their associated pets.
-    
-    Returns:
+
+    Returns
+    -------
+    str
         Rendered template showing all submitted data
     """
-    owners: List[PetOwner] = PetOwner.query.all()
+    owners = PetOwner.query.all()
     return render_template("view_data.html", owners=owners)
 
 
@@ -219,12 +207,14 @@ def view_data() -> str:
 def reset() -> str:
     """
     Reset session data to start fresh.
-    
+
     Clears all session data including owner information and
     pet progress tracking. This allows users to start a new
     submission from scratch.
-    
-    Returns:
+
+    Returns
+    -------
+    str
         Flash message confirming session reset
     """
     session.clear()
@@ -235,7 +225,7 @@ def reset() -> str:
 def create_database() -> None:
     """
     Create the database tables.
-    
+
     This function creates all database tables defined in the models.
     It should be called when the application starts to ensure
     the database schema is properly initialized.
@@ -248,9 +238,16 @@ def create_database() -> None:
 def get_session_info() -> Dict[str, Any]:
     """
     Get current session information for debugging.
-    
-    Returns:
-        Dictionary containing current session state
+
+    Returns
+    -------
+    dict
+        Dictionary containing current session state with keys:
+        - owner_data: Owner information stored in session
+        - added_pets: List of pet numbers already added
+        - total_pets: Total number of pets to add
+        - owner_id: ID of the current owner
+        - session_keys: List of all session keys
     """
     return {
         "owner_data": session.get("owner_data", {}),
@@ -264,6 +261,6 @@ def get_session_info() -> Dict[str, Any]:
 if __name__ == "__main__":
     # Create database tables on startup
     create_database()
-    
+
     # Run the application in debug mode
     app.run(debug=True)

@@ -36,65 +36,83 @@ from typing import Any, Dict, List, Tuple, Union
 class PetOwnerForm(FlaskForm):
     """
     Pet Owner Form for collecting owner and pet information.
-    
+
     This form handles both owner information (required) and pet information
     (optional). The pet information fields are only validated when a pet
     is being added to the database. The form includes comprehensive
     validation for all fields with user-friendly error messages.
-    
-    Attributes:
-        name: Owner's full name field
-        email: Owner's email address field
-        phone: Owner's phone number field
-        postal_code: Owner's postal code field
-        num_pets: Number of pets selection field
-        pet_type: Pet type selection field (optional)
-        sex: Pet sex selection field (optional)
-        age: Pet age input field (optional)
-        location_type: Pet living area selection field (optional)
-        microchipped: Pet microchip status checkbox (optional)
-        submit: Form submission button
+
+    Attributes
+    ----------
+    name : StringField
+        Owner's full name field
+    email : StringField
+        Owner's email address field
+    phone : StringField
+        Owner's phone number field
+    postal_code : StringField
+        Owner's postal code field
+    num_pets : SelectField
+        Number of pets selection field
+    pet_type : SelectField
+        Pet type selection field (optional)
+    sex : SelectField
+        Pet sex selection field (optional)
+    age : IntegerField
+        Pet age input field (optional)
+    location_type : SelectField
+        Pet living area selection field (optional)
+    microchipped : BooleanField
+        Pet microchip status checkbox (optional)
+    submit : SubmitField
+        Form submission button
     """
-    
+
     # Owner Information Fields (Required)
-    name: StringField = StringField(
-        "Name", 
+    name = StringField(
+        "Name",
         validators=[
             DataRequired(message="Name is required"),
-            Length(min=2, max=100, message="Name must be between 2 and 100 characters")
+            Length(min=2, max=100, message="Name must be between 2 and 100 characters"),
         ],
-        description="Owner's full name"
+        description="Owner's full name",
     )
-    
-    email: StringField = StringField(
-        "Email", 
+
+    email = StringField(
+        "Email",
         validators=[
             DataRequired(message="Email is required"),
-            Email(message="Please enter a valid email address")
+            Email(message="Please enter a valid email address"),
         ],
-        description="Owner's email address"
+        description="Owner's email address",
     )
-    
-    phone: StringField = StringField(
-        "Phone", 
+
+    phone = StringField(
+        "Phone",
         validators=[
             DataRequired(message="Phone number is required"),
-            Length(min=10, max=20, message="Phone number must be between 10 and 20 characters")
+            Length(
+                min=10,
+                max=20,
+                message="Phone number must be between 10 and 20 characters",
+            ),
         ],
-        description="Owner's phone number"
+        description="Owner's phone number",
     )
-    
-    postal_code: StringField = StringField(
-        "Postal Code", 
+
+    postal_code = StringField(
+        "Postal Code",
         validators=[
             DataRequired(message="Postal code is required"),
-            Length(min=3, max=10, message="Postal code must be between 3 and 10 characters")
+            Length(
+                min=3, max=10, message="Postal code must be between 3 and 10 characters"
+            ),
         ],
-        description="Owner's postal code"
+        description="Owner's postal code",
     )
-    
+
     # Number of pets selection (Required)
-    num_pets: SelectField = SelectField(
+    num_pets = SelectField(
         "Number of Pets",
         choices=[
             (0, "Select number of pets..."),
@@ -106,151 +124,170 @@ class PetOwnerForm(FlaskForm):
         ],
         coerce=int,
         default=0,
-        validators=[
-            DataRequired(message="Please select the number of pets")
-        ],
-        description="Number of pets to register"
+        validators=[DataRequired(message="Please select the number of pets")],
+        description="Number of pets to register",
     )
 
     # Pet Information Fields (Optional - only validated when adding pets)
-    pet_type: SelectField = SelectField(
+    pet_type = SelectField(
         "Pet Type",
-        choices=[
-            ("", "Select pet type..."), 
-            ("cat", "Cat"), 
-            ("dog", "Dog")
-        ],
+        choices=[("", "Select pet type..."), ("cat", "Cat"), ("dog", "Dog")],
         validators=[Optional()],
-        description="Type of pet (cat or dog)"
-    )
-    
-    sex: SelectField = SelectField(
-        "Sex",
-        choices=[
-            ("", "Select sex..."), 
-            ("male", "Male"), 
-            ("female", "Female")
-        ],
-        validators=[Optional()],
-        description="Pet's sex (male or female)"
-    )
-    
-    age: IntegerField = IntegerField(
-        "Age (years)", 
-        validators=[
-            Optional(),
-            NumberRange(min=0, max=30, message="Age must be between 0 and 30 years")
-        ],
-        description="Pet's age in years"
-    )
-    
-    location_type: SelectField = SelectField(
-        "Living Area",
-        choices=[
-            ("", "Select living area..."), 
-            ("city", "City"), 
-            ("rural", "Rural")
-        ],
-        validators=[Optional()],
-        description="Pet's living environment"
-    )
-    
-    microchipped: BooleanField = BooleanField(
-        "Microchipped",
-        description="Whether the pet is microchipped"
+        description="Type of pet (cat or dog)",
     )
 
-    submit: SubmitField = SubmitField(
-        "Submit",
-        description="Submit the form"
+    sex = SelectField(
+        "Sex",
+        choices=[("", "Select sex..."), ("male", "Male"), ("female", "Female")],
+        validators=[Optional()],
+        description="Pet's sex (male or female)",
     )
-    
+
+    age = IntegerField(
+        "Age (years)",
+        validators=[
+            Optional(),
+            NumberRange(min=0, max=30, message="Age must be between 0 and 30 years"),
+        ],
+        description="Pet's age in years",
+    )
+
+    location_type = SelectField(
+        "Living Area",
+        choices=[("", "Select living area..."), ("city", "City"), ("rural", "Rural")],
+        validators=[Optional()],
+        description="Pet's living environment",
+    )
+
+    microchipped = BooleanField(
+        "Microchipped", description="Whether the pet is microchipped"
+    )
+
+    submit = SubmitField("Submit", description="Submit the form")
+
     def validate_pet_information(self) -> bool:
         """
         Validate that all pet information fields are completed when adding a pet.
-        
+
         This method is called when the form is submitted to ensure that
         if pet information is being provided, all required pet fields
         are filled out completely.
-        
-        Returns:
+
+        Returns
+        -------
+        bool
             True if pet information is valid or not provided, False otherwise
         """
         # If any pet field is filled, all must be filled
-        pet_fields = [self.pet_type.data, self.sex.data, self.age.data, self.location_type.data]
-        
+        pet_fields = [
+            self.pet_type.data,
+            self.sex.data,
+            self.age.data,
+            self.location_type.data,
+        ]
+
         # Check if any pet field has data
-        has_pet_data = any(field for field in pet_fields if field is not None and field != "")
-        
+        has_pet_data = any(
+            field for field in pet_fields if field is not None and field != ""
+        )
+
         if has_pet_data:
             # If any pet field is filled, all must be filled
-            if not all(field for field in pet_fields if field is not None and field != ""):
-                self.pet_type.errors.append("Please complete all pet information fields")
+            if not all(
+                field for field in pet_fields if field is not None and field != ""
+            ):
+                self.pet_type.errors.append(
+                    "Please complete all pet information fields"
+                )
                 return False
-        
+
         return True
-    
+
     def get_owner_data(self) -> Dict[str, Any]:
         """
         Get owner information as a dictionary.
-        
-        Returns:
-            Dictionary containing owner information
+
+        Returns
+        -------
+        dict
+            Dictionary containing owner information with keys:
+            - name: Owner's name
+            - email: Owner's email
+            - phone: Owner's phone
+            - postal_code: Owner's postal code
+            - num_pets: Number of pets selected
         """
         return {
-            'name': self.name.data,
-            'email': self.email.data,
-            'phone': self.phone.data,
-            'postal_code': self.postal_code.data,
-            'num_pets': self.num_pets.data
+            "name": self.name.data,
+            "email": self.email.data,
+            "phone": self.phone.data,
+            "postal_code": self.postal_code.data,
+            "num_pets": self.num_pets.data,
         }
-    
+
     def get_pet_data(self) -> Dict[str, Any]:
         """
         Get pet information as a dictionary.
-        
-        Returns:
-            Dictionary containing pet information, or empty dict if no pet data
+
+        Returns
+        -------
+        dict
+            Dictionary containing pet information, or empty dict if no pet data.
+            Keys include: pet_type, sex, age, location_type, microchipped
         """
         if not self.validate_pet_information():
             return {}
-        
+
         return {
-            'pet_type': self.pet_type.data,
-            'sex': self.sex.data,
-            'age': self.age.data,
-            'location_type': self.location_type.data,
-            'microchipped': self.microchipped.data
+            "pet_type": self.pet_type.data,
+            "sex": self.sex.data,
+            "age": self.age.data,
+            "location_type": self.location_type.data,
+            "microchipped": self.microchipped.data,
         }
-    
+
     def has_pet_information(self) -> bool:
         """
         Check if the form contains pet information.
-        
-        Returns:
+
+        Returns
+        -------
+        bool
             True if any pet field has data, False otherwise
         """
-        pet_fields = [self.pet_type.data, self.sex.data, self.age.data, self.location_type.data]
+        pet_fields = [
+            self.pet_type.data,
+            self.sex.data,
+            self.age.data,
+            self.location_type.data,
+        ]
         return any(field for field in pet_fields if field is not None and field != "")
-    
+
     def is_complete(self) -> bool:
         """
         Check if the form is complete and ready for submission.
-        
-        Returns:
+
+        Returns
+        -------
+        bool
             True if form is complete, False otherwise
         """
         # Check if owner information is complete
-        owner_fields = [self.name.data, self.email.data, self.phone.data, self.postal_code.data]
+        owner_fields = [
+            self.name.data,
+            self.email.data,
+            self.phone.data,
+            self.postal_code.data,
+        ]
         if not all(field for field in owner_fields):
             return False
-        
+
         # Check if number of pets is selected
         if self.num_pets.data == 0:
             return False
-        
+
         # If pet information is provided, it must be complete
         if self.has_pet_information():
             return self.validate_pet_information()
-        
+
         return True
