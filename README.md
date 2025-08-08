@@ -1,3 +1,4 @@
+[A sample app to play around with flask and javascript]
 # Pet Information Form - Flask App
 
 A Flask web application that collects information about pets and their owners using WTForms and stores the data in a SQLite database.
