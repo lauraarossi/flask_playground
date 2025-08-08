@@ -219,7 +219,7 @@ def reset() -> str:
     """
     session.clear()
     flash("Session reset. You can start a new submission.", "success")
-    return "Session reset successfully"
+    return redirect(url_for("index"))
 
 
 def create_database() -> None:
@@ -254,7 +254,7 @@ def get_session_info() -> Dict[str, Any]:
         "added_pets": session.get("added_pets", []),
         "total_pets": session.get("total_pets", 0),
         "owner_id": session.get("owner_id"),
-        "session_keys": list(session.keys())
+        "session_keys": list(session.keys()),
     }
 
 
