@@ -28,7 +28,7 @@
                         <td>
                             {% for pet in owner.pets %}
                                 <div class="pet-info">
-                                    <strong>{{ pet.pet_type.title() }}</strong><br>
+                                    <strong>{{ pet.pet_type.title() }} (Pet {{ pet.pet_number }})</strong><br>
                                     Sex: {{ pet.sex.title() }}<br>
                                     Age: {{ pet.age }} years<br>
                                     Location: {{ pet.location_type.title() }}<br>

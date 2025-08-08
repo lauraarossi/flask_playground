@@ -4,7 +4,14 @@
 
 {% block content %}
 <div class="form-container">
-    <form method="POST">
+    {% if added_pets and total_pets > 0 %}
+        <div class="progress-info">
+            <h3>📊 Progress: {{ added_pets|length }} of {{ total_pets }} pets added</h3>
+            <p>Owner information is saved. Continue adding pets or <a href="{{ url_for('reset') }}">start fresh</a>.</p>
+        </div>
+    {% endif %}
+    
+    <form method="POST" id="petForm">
         {{ form.hidden_tag() }}
         
         <div class="form-section">
@@ -57,10 +64,34 @@
                     </div>
                 {% endif %}
             </div>
+            
+            <div class="form-group">
+                {{ form.num_pets.label }}
+                {{ form.num_pets(class="form-control", id="numPets") }}
+                {% if form.num_pets.errors %}
+                    <div class="error-messages">
+                        {% for error in form.num_pets.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
         </div>
         
-        <div class="form-section">
+        <div class="form-section" id="petButtonsSection" style="display: none;">
+            <h2>🐕🐈 Select Pet to Add</h2>
+            <div id="petButtons" class="pet-buttons">
+                <!-- Pet buttons will be generated here -->
+            </div>
+        </div>
+        
+        <div class="form-section" id="petInfoSection" style="display: none;">
             <h2>🐕🐈 Pet Information</h2>
+            <div class="current-pet-info">
+                <p>Currently adding: <strong id="currentPetText">Pet 1</strong></p>
+            </div>
+            
+            <input type="hidden" id="currentPetNumber" name="current_pet_number" value="1">
             
             <div class="form-group">
                 {{ form.pet_type.label }}
@@ -131,31 +162,12 @@
     </form>
 </div>
 
-<style>
-    .error-messages {
-        margin-top: 5px;
-    }
-    
-    .error {
-        color: #dc3545;
-        font-size: 14px;
-        display: block;
-        margin-top: 2px;
-    }
-    
-    .form-control {
-        width: 100%;
-        padding: 12px;
-        border: 2px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
-        transition: border-color 0.3s ease;
-    }
-    
-    .form-control:focus {
-        outline: none;
-        border-color: #ff00ff;
-        box-shadow: 0 0 5px rgba(255, 0, 255, 0.3);
-    }
-</style>
+<!-- Pass Flask variables to JavaScript -->
+<script>
+    window.addedPets = {{ added_pets|tojson|safe }};
+    window.totalPets = {{ total_pets }};
+</script>
+
+<!-- Include external JavaScript file -->
+<script src="{{ url_for('static', filename='js/pet-form.js') }}"></script>
 {% endblock %}
