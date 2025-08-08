@@ -1,87 +1,24 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, IntegerField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Email, Length, NumberRange, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 import os
+
+# Import model creation functions and form
+from models.pet_owner_model import create_pet_owner_model
+from models.pet_model import create_pet_model
+from forms.pet_owner_form import PetOwnerForm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "your-secret-key-here"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///pets.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# Initialize database with the app
 db = SQLAlchemy(app)
 
-
-# Database Models
-class PetOwner(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), nullable=False)
-    phone = db.Column(db.String(20), nullable=False)
-    postal_code = db.Column(db.String(10), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    pets = db.relationship("Pet", backref="owner", lazy=True)
-
-
-class Pet(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    pet_type = db.Column(db.String(10), nullable=False)  # 'cat' or 'dog'
-    sex = db.Column(db.String(10), nullable=False)  # 'male' or 'female'
-    age = db.Column(db.Integer, nullable=False)
-    location_type = db.Column(db.String(10), nullable=False)  # 'city' or 'rural'
-    microchipped = db.Column(db.Boolean, default=False)
-    pet_number = db.Column(db.Integer, nullable=False)  # New column for pet number
-    owner_id = db.Column(db.Integer, db.ForeignKey("pet_owner.id"), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-# WTForm
-class PetOwnerForm(FlaskForm):
-    # Owner Information
-    name = StringField("Name", validators=[DataRequired(), Length(min=2, max=100)])
-    email = StringField("Email", validators=[DataRequired(), Email()])
-    phone = StringField("Phone", validators=[DataRequired(), Length(min=10, max=20)])
-    postal_code = StringField(
-        "Postal Code", validators=[DataRequired(), Length(min=3, max=10)]
-    )
-    num_pets = SelectField(
-        "Number of Pets",
-        choices=[
-            (0, "Select number of pets..."),
-            (1, "1"),
-            (2, "2"),
-            (3, "3"),
-            (4, "4"),
-            (5, "5"),
-        ],
-        coerce=int,
-        default=0,
-    )
-
-    # Pet Information - Made optional since they might not be filled when form is submitted
-    pet_type = SelectField(
-        "Pet Type",
-        choices=[("", "Select pet type..."), ("cat", "Cat"), ("dog", "Dog")],
-        validators=[Optional()],
-    )
-    sex = SelectField(
-        "Sex",
-        choices=[("", "Select sex..."), ("male", "Male"), ("female", "Female")],
-        validators=[Optional()],
-    )
-    age = IntegerField(
-        "Age (years)", validators=[Optional(), NumberRange(min=0, max=30)]
-    )
-    location_type = SelectField(
-        "Living Area",
-        choices=[("", "Select living area..."), ("city", "City"), ("rural", "Rural")],
-        validators=[Optional()],
-    )
-    microchipped = BooleanField("Microchipped")
-
-    submit = SubmitField("Submit")
+# Create models with the database instance
+PetOwner = create_pet_owner_model(db)
+Pet = create_pet_model(db)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -235,7 +172,7 @@ def reset():
     """Reset session data to start fresh"""
     session.clear()
     flash("Session reset. You can start a new submission.", "success")
-    return redirect(url_for("index"))
+    # return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
