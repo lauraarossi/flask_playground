@@ -1,4 +1,4 @@
-[A sample app to play around with flask and javascript]
+[A sample app to play around with flask, javascript, and Cursor]
 # Pet Information Form - Flask App
 
 A Flask web application for registering pet owners and their pets with a dynamic multi-pet interface. The application features a modular architecture with separate models and forms, session management for multi-pet submissions, and a responsive UI with pet selection buttons.
