@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}View All Data{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>📊 All Submitted Data</h2>
+    
+    {% if owners %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Owner Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Postal Code</th>
+                    <th>Pets</th>
+                    <th>Submitted</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for owner in owners %}
+                    <tr>
+                        <td>{{ owner.name }}</td>
+                        <td>{{ owner.email }}</td>
+                        <td>{{ owner.phone }}</td>
+                        <td>{{ owner.postal_code }}</td>
+                        <td>
+                            {% for pet in owner.pets %}
+                                <div class="pet-info">
+                                    <strong>{{ pet.pet_type.title() }}</strong><br>
+                                    Sex: {{ pet.sex.title() }}<br>
+                                    Age: {{ pet.age }} years<br>
+                                    Location: {{ pet.location_type.title() }}<br>
+                                    Microchipped: {{ "Yes" if pet.microchipped else "No" }}
+                                </div>
+                            {% endfor %}
+                        </td>
+                        <td>{{ owner.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align: center; color: #666; font-style: italic;">
+            No data has been submitted yet. Be the first to add your pet information!
+        </p>
+    {% endif %}
+</div>
+{% endblock %}
